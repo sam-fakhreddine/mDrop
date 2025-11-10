@@ -7,16 +7,38 @@ import os
 class SystemAudioCaptureEngine: NSObject, ObservableObject {
     @Published var audioLevels: [Float] = Array(repeating: 0, count: 512)
     @Published var isCapturing = false
+    @Published var availableApplications: [SCRunningApplication] = []
 
     private var stream: SCStream?
     private var audioBuffer: [Float] = []
     private let bufferSize = 1024
+    private var selectedApplications: [SCRunningApplication] = []
 
     // Use OSAllocatedUnfairLock for efficient thread-safe counter access
     private let bufferCount = OSAllocatedUnfairLock(initialState: 0)
 
     override init() {
         super.init()
+    }
+
+    /// Refresh the list of available applications
+    func refreshAvailableApplications() async {
+        do {
+            let content = try await SCShareableContent.excludingDesktopWindows(
+                false,
+                onScreenWindowsOnly: true
+            )
+            availableApplications = content.applications
+            print("📱 Found \(availableApplications.count) applications")
+        } catch {
+            print("❌ Failed to get available applications: \(error)")
+        }
+    }
+
+    /// Set which applications to capture audio from
+    func setApplications(_ applications: [SCRunningApplication]) {
+        selectedApplications = applications
+        print("🎯 Selected \(applications.count) applications for capture")
     }
 
     func start() async {
@@ -30,14 +52,28 @@ class SystemAudioCaptureEngine: NSObject, ObservableObject {
                 onScreenWindowsOnly: true
             )
 
-            // Create a filter to capture system audio
-            // Capture from the main display
+            // Use selected applications, or all if none selected
+            let appsToCapture = selectedApplications.isEmpty ? content.applications : selectedApplications
+
+            print("📱 Available applications for audio capture:")
+            for app in content.applications {
+                print("  - \(app.applicationName) (Bundle: \(app.bundleIdentifier))")
+            }
+            print("🎯 Capturing from \(appsToCapture.count) application(s)")
+
+            // Create a filter to capture system audio from running applications
+            // This captures audio from apps like Safari, Spotify, Music, Chrome, etc.
             guard let display = content.displays.first else {
-                print("No display found")
+                print("❌ No display found")
                 return
             }
 
-            let filter = SCContentFilter(display: display, excludingWindows: [])
+            // Capture from display including specified applications
+            let filter = SCContentFilter(
+                display: display,
+                including: appsToCapture,
+                exceptingWindows: []
+            )
 
             // Configure stream to capture audio only
             let config = SCStreamConfiguration()
@@ -57,9 +93,9 @@ class SystemAudioCaptureEngine: NSObject, ObservableObject {
             try await stream?.startCapture()
 
             isCapturing = true
-            print("✓ System audio capture started")
+            print("✅ System audio capture started successfully")
         } catch {
-            print("Failed to start system audio capture: \(error)")
+            print("❌ Failed to start system audio capture: \(error)")
         }
     }
 
@@ -117,52 +153,56 @@ extension SystemAudioCaptureEngine: SCStreamOutput {
         // blockBuffer is automatically managed by Swift ARC
         // No need for manual CFRelease in modern Swift
 
-        let buffers = UnsafeBufferPointer<AudioBuffer>(
-            start: &audioBufferList.mBuffers,
-            count: Int(audioBufferList.mNumberBuffers)
-        )
-
-        for buffer in buffers {
-            guard let data = buffer.mData else { continue }
-
-            let frameCount = Int(buffer.mDataByteSize) / MemoryLayout<Float>.size
-            let samples = UnsafeBufferPointer<Float>(
-                start: data.assumingMemoryBound(to: Float.self),
-                count: frameCount
+        // Safely access buffer list using withUnsafeBufferPointer
+        withUnsafePointer(to: &audioBufferList.mBuffers) { buffersPtr in
+            let buffers = UnsafeBufferPointer<AudioBuffer>(
+                start: buffersPtr,
+                count: Int(audioBufferList.mNumberBuffers)
             )
 
-            // Convert to mono if stereo by averaging channels
-            var monoSamples: [Float] = []
-            if audioBufferList.mNumberBuffers == 2 {
-                // Stereo to mono
-                for i in stride(from: 0, to: frameCount, by: 2) {
-                    if i + 1 < frameCount {
-                        monoSamples.append((samples[i] + samples[i + 1]) / 2.0)
+            for buffer in buffers {
+                guard let data = buffer.mData else { continue }
+
+                let frameCount = Int(buffer.mDataByteSize) / MemoryLayout<Float>.size
+                let samples = UnsafeBufferPointer<Float>(
+                    start: data.assumingMemoryBound(to: Float.self),
+                    count: frameCount
+                )
+
+                // Convert to mono if stereo by averaging channels
+                var monoSamples: [Float] = []
+                if audioBufferList.mNumberBuffers == 2 {
+                    // Stereo to mono
+                    for i in stride(from: 0, to: frameCount, by: 2) {
+                        if i + 1 < frameCount {
+                            monoSamples.append((samples[i] + samples[i + 1]) / 2.0)
+                        }
                     }
+                } else {
+                    monoSamples = Array(samples)
                 }
-            } else {
-                monoSamples = Array(samples)
-            }
 
-            // Thread-safe buffer count access using OSAllocatedUnfairLock
-            let currentCount = bufferCount.withLock { count in
-                count += 1
-                return count
-            }
+                // Thread-safe buffer count access using OSAllocatedUnfairLock
+                let currentCount = bufferCount.withLock { count in
+                    count += 1
+                    return count
+                }
 
-            if currentCount == 1 || currentCount % 60 == 0 {
-                let rms = sqrt(monoSamples.map { $0 * $0 }.reduce(0, +) / Float(monoSamples.count))
-                print("🔊 System audio buffer #\(currentCount): frames=\(frameCount), RMS=\(rms)")
-            }
+                if currentCount == 1 || currentCount % 60 == 0 {
+                    let rms = sqrt(monoSamples.map { $0 * $0 }.reduce(0, +) / Float(monoSamples.count))
+                    print("🔊 System audio buffer #\(currentCount): frames=\(frameCount), RMS=\(rms)")
+                }
 
-            // Ensure we have enough data
-            var audioData = monoSamples
-            if audioData.count < 512 {
-                audioData.append(contentsOf: Array(repeating: 0, count: 512 - audioData.count))
-            }
+                // Ensure we have enough data and capture before Task to avoid mutation warning
+                var audioData = monoSamples
+                if audioData.count < 512 {
+                    audioData.append(contentsOf: Array(repeating: 0, count: 512 - audioData.count))
+                }
+                let finalAudioData = Array(audioData.prefix(512))
 
-            Task { @MainActor [weak self] in
-                self?.audioLevels = Array(audioData.prefix(512))
+                Task { @MainActor [weak self] in
+                    self?.audioLevels = finalAudioData
+                }
             }
         }
     }

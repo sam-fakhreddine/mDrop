@@ -34,7 +34,7 @@ struct ContentView: View {
         .onDisappear {
             visualizationEngine.stop()
         }
-        .onChange(of: presetManager.currentPreset) { newPreset in
+        .onChange(of: presetManager.currentPreset) { _, newPreset in
             visualizationEngine.setPreset(newPreset)
         }
         .onTapGesture {
@@ -158,7 +158,7 @@ struct ContentView: View {
                 }
                 .pickerStyle(.segmented)
                 .frame(width: 250)
-                .onChange(of: visualizationEngine.audioSource) { newSource in
+                .onChange(of: visualizationEngine.audioSource) { _, newSource in
                     visualizationEngine.setAudioSource(newSource)
                 }
             }
