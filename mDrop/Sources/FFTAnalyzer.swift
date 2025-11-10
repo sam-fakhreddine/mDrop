@@ -54,16 +54,18 @@ class FFTAnalyzer: ObservableObject {
 
         // Calculate magnitudes
         var mags = [Float](repeating: 0, count: fftSize / 2)
-        var realPartsCopy = realParts
-        var imagPartsCopy = imagParts
 
-        // Split complex to get magnitudes
-        var splitComplex = DSPSplitComplex(
-            realp: &realPartsCopy,
-            imagp: &imagPartsCopy
-        )
+        // Use withUnsafeMutableBufferPointer for safe pointer access
+        realParts.withUnsafeMutableBufferPointer { realBuffer in
+            imagParts.withUnsafeMutableBufferPointer { imagBuffer in
+                var splitComplex = DSPSplitComplex(
+                    realp: realBuffer.baseAddress!,
+                    imagp: imagBuffer.baseAddress!
+                )
 
-        vDSP_zvabs(&splitComplex, 1, &mags, 1, vDSP_Length(fftSize / 2))
+                vDSP_zvabs(&splitComplex, 1, &mags, 1, vDSP_Length(fftSize / 2))
+            }
+        }
 
         // Normalize
         var normalizedMags = mags
