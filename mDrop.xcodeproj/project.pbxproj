@@ -7,33 +7,34 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		00000001 /* mDropApp.swift */ = {isa = PBXBuildFile; fileRef = 00000002; };
-		00000003 /* ContentView.swift */ = {isa = PBXBuildFile; fileRef = 00000004; };
-		00000005 /* AudioCaptureEngine.swift */ = {isa = PBXBuildFile; fileRef = 00000006; };
-		00000007 /* FFTAnalyzer.swift */ = {isa = PBXBuildFile; fileRef = 00000008; };
-		00000009 /* VisualizationEngine.swift */ = {isa = PBXBuildFile; fileRef = 0000000A; };
-		0000000B /* MetalRenderer.swift */ = {isa = PBXBuildFile; fileRef = 0000000C; };
-		0000000D /* Shaders.metal */ = {isa = PBXBuildFile; fileRef = 0000000E; };
-		0000000F /* VisualizationView.swift */ = {isa = PBXBuildFile; fileRef = 00000010; };
-		00000011 /* PresetManager.swift */ = {isa = PBXBuildFile; fileRef = 00000012; };
+		A1000001 /* mDropApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000011 /* mDropApp.swift */; };
+		A1000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000012 /* ContentView.swift */; };
+		A1000003 /* AudioCaptureEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000013 /* AudioCaptureEngine.swift */; };
+		A1000004 /* FFTAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000014 /* FFTAnalyzer.swift */; };
+		A1000005 /* VisualizationEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000015 /* VisualizationEngine.swift */; };
+		A1000006 /* MetalRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000016 /* MetalRenderer.swift */; };
+		A1000007 /* VisualizationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000017 /* VisualizationView.swift */; };
+		A1000008 /* PresetManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000018 /* PresetManager.swift */; };
+		A1000009 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = A1000019 /* Shaders.metal */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		00000002 /* mDropApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = mDropApp.swift; };
-		00000004 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; };
-		00000006 /* AudioCaptureEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCaptureEngine.swift; };
-		00000008 /* FFTAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFTAnalyzer.swift; };
-		0000000A /* VisualizationEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualizationEngine.swift; };
-		0000000C /* MetalRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalRenderer.swift; };
-		0000000E /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; };
-		00000010 /* VisualizationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualizationView.swift; };
-		00000012 /* PresetManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetManager.swift; };
-		00000020 /* mDrop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mDrop.app; };
-		00000021 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; };
+		A1000011 /* mDropApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = mDropApp.swift; path = mDrop/Sources/mDropApp.swift; sourceTree = SOURCE_ROOT; };
+		A1000012 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ContentView.swift; path = mDrop/Sources/ContentView.swift; sourceTree = SOURCE_ROOT; };
+		A1000013 /* AudioCaptureEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AudioCaptureEngine.swift; path = mDrop/Sources/AudioCaptureEngine.swift; sourceTree = SOURCE_ROOT; };
+		A1000014 /* FFTAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FFTAnalyzer.swift; path = mDrop/Sources/FFTAnalyzer.swift; sourceTree = SOURCE_ROOT; };
+		A1000015 /* VisualizationEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = VisualizationEngine.swift; path = mDrop/Sources/VisualizationEngine.swift; sourceTree = SOURCE_ROOT; };
+		A1000016 /* MetalRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MetalRenderer.swift; path = mDrop/Sources/MetalRenderer.swift; sourceTree = SOURCE_ROOT; };
+		A1000017 /* VisualizationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = VisualizationView.swift; path = mDrop/Sources/VisualizationView.swift; sourceTree = SOURCE_ROOT; };
+		A1000018 /* PresetManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PresetManager.swift; path = mDrop/Sources/PresetManager.swift; sourceTree = SOURCE_ROOT; };
+		A1000019 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; name = Shaders.metal; path = mDrop/Shaders/Shaders.metal; sourceTree = SOURCE_ROOT; };
+		A1000020 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = mDrop/Info.plist; sourceTree = SOURCE_ROOT; };
+		A1000021 /* mDrop.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = mDrop.entitlements; path = mDrop/mDrop.entitlements; sourceTree = SOURCE_ROOT; };
+		A1000030 /* mDrop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mDrop.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		00000030 /* Frameworks */ = {
+		A1000040 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -43,65 +44,66 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		00000040 /* mDrop */ = {
+		A1000050 = {
 			isa = PBXGroup;
 			children = (
-				00000050 /* Sources */,
-				00000060 /* Shaders */,
-				00000021 /* Info.plist */,
-			);
-			path = mDrop;
-			sourceTree = "<group>";
-		};
-		00000050 /* Sources */ = {
-			isa = PBXGroup;
-			children = (
-				00000002 /* mDropApp.swift */,
-				00000004 /* ContentView.swift */,
-				00000006 /* AudioCaptureEngine.swift */,
-				00000008 /* FFTAnalyzer.swift */,
-				0000000A /* VisualizationEngine.swift */,
-				0000000C /* MetalRenderer.swift */,
-				00000010 /* VisualizationView.swift */,
-				00000012 /* PresetManager.swift */,
-			);
-			path = Sources;
-			sourceTree = "<group>";
-		};
-		00000060 /* Shaders */ = {
-			isa = PBXGroup;
-			children = (
-				0000000E /* Shaders.metal */,
-			);
-			path = Shaders;
-			sourceTree = "<group>";
-		};
-		00000070 = {
-			isa = PBXGroup;
-			children = (
-				00000040 /* mDrop */,
-				00000080 /* Products */,
+				A1000060 /* mDrop */,
+				A1000070 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		00000080 /* Products */ = {
+		A1000060 /* mDrop */ = {
 			isa = PBXGroup;
 			children = (
-				00000020 /* mDrop.app */,
+				A1000080 /* Sources */,
+				A1000090 /* Shaders */,
+				A1000021 /* mDrop.entitlements */,
+				A1000020 /* Info.plist */,
+			);
+			name = mDrop;
+			sourceTree = "<group>";
+		};
+		A1000070 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A1000030 /* mDrop.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		A1000080 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				A1000011 /* mDropApp.swift */,
+				A1000012 /* ContentView.swift */,
+				A1000013 /* AudioCaptureEngine.swift */,
+				A1000014 /* FFTAnalyzer.swift */,
+				A1000015 /* VisualizationEngine.swift */,
+				A1000016 /* MetalRenderer.swift */,
+				A1000017 /* VisualizationView.swift */,
+				A1000018 /* PresetManager.swift */,
+			);
+			name = Sources;
+			sourceTree = "<group>";
+		};
+		A1000090 /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				A1000019 /* Shaders.metal */,
+			);
+			name = Shaders;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		00000090 /* mDrop */ = {
+		A1000100 /* mDrop */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 000000A0;
+			buildConfigurationList = A1000110 /* Build configuration list for PBXNativeTarget "mDrop" */;
 			buildPhases = (
-				000000B0 /* Sources */,
-				00000030 /* Frameworks */,
-				000000C0 /* Resources */,
+				A1000120 /* Sources */,
+				A1000040 /* Frameworks */,
+				A1000130 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -109,25 +111,25 @@
 			);
 			name = mDrop;
 			productName = mDrop;
-			productReference = 00000020;
+			productReference = A1000030 /* mDrop.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		000000D0 /* Project object */ = {
+		A1000140 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
-					00000090 = {
+					A1000100 = {
 						CreatedOnToolsVersion = 15.0;
 					};
 				};
 			};
-			buildConfigurationList = 000000E0;
+			buildConfigurationList = A1000150 /* Build configuration list for PBXProject "mDrop" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -135,18 +137,18 @@
 				en,
 				Base,
 			);
-			mainGroup = 00000070;
-			productRefGroup = 00000080;
+			mainGroup = A1000050;
+			productRefGroup = A1000070 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				00000090 /* mDrop */,
+				A1000100 /* mDrop */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		000000C0 /* Resources */ = {
+		A1000130 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -156,26 +158,26 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		000000B0 /* Sources */ = {
+		A1000120 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00000001 /* mDropApp.swift */,
-				00000003 /* ContentView.swift */,
-				00000005 /* AudioCaptureEngine.swift */,
-				00000007 /* FFTAnalyzer.swift */,
-				00000009 /* VisualizationEngine.swift */,
-				0000000B /* MetalRenderer.swift */,
-				0000000D /* Shaders.metal */,
-				0000000F /* VisualizationView.swift */,
-				00000011 /* PresetManager.swift */,
+				A1000001 /* mDropApp.swift in Sources */,
+				A1000002 /* ContentView.swift in Sources */,
+				A1000003 /* AudioCaptureEngine.swift in Sources */,
+				A1000004 /* FFTAnalyzer.swift in Sources */,
+				A1000005 /* VisualizationEngine.swift in Sources */,
+				A1000006 /* MetalRenderer.swift in Sources */,
+				A1000007 /* VisualizationView.swift in Sources */,
+				A1000008 /* PresetManager.swift in Sources */,
+				A1000009 /* Shaders.metal in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		000000F0 /* Debug */ = {
+		A1000200 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -238,7 +240,7 @@
 			};
 			name = Debug;
 		};
-		000000F1 /* Release */ = {
+		A1000201 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -293,7 +295,7 @@
 			};
 			name = Release;
 		};
-		00000100 /* Debug */ = {
+		A1000300 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -304,7 +306,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = mDrop/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -321,7 +323,7 @@
 			};
 			name = Debug;
 		};
-		00000101 /* Release */ = {
+		A1000301 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -332,7 +334,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = mDrop/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -352,25 +354,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		000000A0 /* Build configuration list for PBXNativeTarget "mDrop" */ = {
+		A1000110 /* Build configuration list for PBXNativeTarget "mDrop" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				00000100 /* Debug */,
-				00000101 /* Release */,
+				A1000300 /* Debug */,
+				A1000301 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		000000E0 /* Build configuration list for PBXProject "mDrop" */ = {
+		A1000150 /* Build configuration list for PBXProject "mDrop" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				000000F0 /* Debug */,
-				000000F1 /* Release */,
+				A1000200 /* Debug */,
+				A1000201 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 000000D0 /* Project object */;
+	rootObject = A1000140 /* Project object */;
 }
