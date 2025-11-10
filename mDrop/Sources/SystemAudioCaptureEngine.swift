@@ -3,6 +3,7 @@ import ScreenCaptureKit
 import AVFoundation
 
 @available(macOS 12.3, *)
+@MainActor
 class SystemAudioCaptureEngine: NSObject, ObservableObject {
     @Published var audioLevels: [Float] = Array(repeating: 0, count: 512)
     @Published var isCapturing = false
@@ -53,10 +54,7 @@ class SystemAudioCaptureEngine: NSObject, ObservableObject {
             try stream?.addStreamOutput(self, type: .audio, sampleHandlerQueue: .global(qos: .userInteractive))
             try await stream?.startCapture()
 
-            DispatchQueue.main.async { [weak self] in
-                self?.isCapturing = true
-            }
-
+            isCapturing = true
             print("✓ System audio capture started")
         } catch {
             print("Failed to start system audio capture: \(error)")
@@ -68,10 +66,7 @@ class SystemAudioCaptureEngine: NSObject, ObservableObject {
             try await stream?.stopCapture()
             stream = nil
 
-            DispatchQueue.main.async { [weak self] in
-                self?.isCapturing = false
-            }
-
+            isCapturing = false
             print("✓ System audio capture stopped")
         } catch {
             print("Failed to stop system audio capture: \(error)")
@@ -86,9 +81,9 @@ class SystemAudioCaptureEngine: NSObject, ObservableObject {
 
 @available(macOS 12.3, *)
 extension SystemAudioCaptureEngine: SCStreamDelegate {
-    func stream(_ stream: SCStream, didStopWithError error: Error) {
+    nonisolated func stream(_ stream: SCStream, didStopWithError error: Error) {
         print("Stream stopped with error: \(error)")
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             self?.isCapturing = false
         }
     }
@@ -96,7 +91,7 @@ extension SystemAudioCaptureEngine: SCStreamDelegate {
 
 @available(macOS 12.3, *)
 extension SystemAudioCaptureEngine: SCStreamOutput {
-    func stream(_ stream: SCStream, didOutputSampleBuffer sampleBuffer: CMSampleBuffer, of type: SCStreamOutputType) {
+    nonisolated func stream(_ stream: SCStream, didOutputSampleBuffer sampleBuffer: CMSampleBuffer, of type: SCStreamOutputType) {
         guard type == .audio else { return }
 
         // Extract audio data from the sample buffer
@@ -119,12 +114,8 @@ extension SystemAudioCaptureEngine: SCStreamOutput {
             return
         }
 
-        defer {
-            if let blockBuffer = blockBuffer {
-                // Release the block buffer when done
-                CFRelease(blockBuffer)
-            }
-        }
+        // blockBuffer is automatically managed by Swift ARC
+        // No need for manual CFRelease in modern Swift
 
         let buffers = UnsafeBufferPointer<AudioBuffer>(
             start: &audioBufferList.mBuffers,
@@ -165,7 +156,7 @@ extension SystemAudioCaptureEngine: SCStreamOutput {
                 audioData.append(contentsOf: Array(repeating: 0, count: 512 - audioData.count))
             }
 
-            DispatchQueue.main.async { [weak self] in
+            Task { @MainActor [weak self] in
                 self?.audioLevels = Array(audioData.prefix(512))
             }
         }
