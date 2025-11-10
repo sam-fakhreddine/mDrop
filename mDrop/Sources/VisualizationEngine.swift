@@ -6,6 +6,7 @@ enum AudioSource {
     case systemAudio
 }
 
+@MainActor
 class VisualizationEngine: ObservableObject {
     @Published var isRunning = false
     @Published var currentPreset: VisualizationPreset = .plasma
@@ -66,7 +67,7 @@ class VisualizationEngine: ObservableObject {
     }
 
     func start() {
-        Task { @MainActor in
+        Task {
             switch audioSource {
             case .microphone:
                 audioCaptureEngine.start()
@@ -78,7 +79,7 @@ class VisualizationEngine: ObservableObject {
     }
 
     func stop() {
-        Task { @MainActor in
+        Task {
             audioCaptureEngine.stop()
             await systemAudioCaptureEngine.stop()
             isRunning = false

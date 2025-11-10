@@ -1,7 +1,7 @@
 import Foundation
 import ScreenCaptureKit
 import AVFoundation
-import Synchronization
+import os
 
 @MainActor
 class SystemAudioCaptureEngine: NSObject, ObservableObject {
