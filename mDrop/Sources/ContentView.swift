@@ -154,9 +154,7 @@ struct ContentView: View {
 
                 Picker("", selection: $visualizationEngine.audioSource) {
                     Text("🎤 Microphone").tag(AudioSource.microphone)
-                    if #available(macOS 12.3, *) {
-                        Text("🔊 System Audio").tag(AudioSource.systemAudio)
-                    }
+                    Text("🔊 System Audio").tag(AudioSource.systemAudio)
                 }
                 .pickerStyle(.segmented)
                 .frame(width: 250)

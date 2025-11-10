@@ -2,7 +2,7 @@
 
 A beautiful, hardware-accelerated music visualizer built natively for macOS and optimized for Apple Silicon.
 
-![Platform](https://img.shields.io/badge/platform-macOS%2013.0+-blue)
+![Platform](https://img.shields.io/badge/platform-macOS%2015.0+-blue)
 ![Swift](https://img.shields.io/badge/Swift-5.0-orange)
 ![Metal](https://img.shields.io/badge/Metal-GPU%20Accelerated-green)
 ![License](https://img.shields.io/badge/license-MIT-lightgrey)
@@ -33,9 +33,9 @@ A beautiful, hardware-accelerated music visualizer built natively for macOS and 
 
 ## Requirements
 
-- macOS 13.0 or later
+- macOS 15.0 or later
 - Xcode 15.0 or later
-- Apple Silicon (M1/M2/M3) or Intel Mac with Metal support
+- Apple Silicon (M1/M2/M3/M4) or Intel Mac with Metal support
 
 ## Build Instructions
 
@@ -186,13 +186,12 @@ You can create your own effects by modifying these shaders or adding new ones.
 
 ## Known Limitations
 
-- Currently captures microphone input only (system audio loopback coming in future update)
-- Requires macOS 13.0 or later
-- Must grant microphone permissions to function
+- Requires macOS 15.0 or later
+- Must grant microphone permissions for microphone input
+- Must grant screen recording permissions for system audio capture
 
 ## Future Enhancements
 
-- [ ] System audio capture (loopback) without microphone
 - [ ] Custom color palettes
 - [ ] Preset editor
 - [ ] Save/load custom presets

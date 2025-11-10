@@ -1,8 +1,8 @@
 import Foundation
 import ScreenCaptureKit
 import AVFoundation
+import Synchronization
 
-@available(macOS 12.3, *)
 @MainActor
 class SystemAudioCaptureEngine: NSObject, ObservableObject {
     @Published var audioLevels: [Float] = Array(repeating: 0, count: 512)
@@ -12,9 +12,8 @@ class SystemAudioCaptureEngine: NSObject, ObservableObject {
     private var audioBuffer: [Float] = []
     private let bufferSize = 1024
 
-    // Use NSLock for thread-safe counter access
-    private let bufferCountLock = NSLock()
-    private var _bufferCount = 0
+    // Use OSAllocatedUnfairLock for efficient thread-safe counter access
+    private let bufferCount = OSAllocatedUnfairLock(initialState: 0)
 
     override init() {
         super.init()
@@ -82,7 +81,6 @@ class SystemAudioCaptureEngine: NSObject, ObservableObject {
     }
 }
 
-@available(macOS 12.3, *)
 extension SystemAudioCaptureEngine: SCStreamDelegate {
     nonisolated func stream(_ stream: SCStream, didStopWithError error: Error) {
         print("Stream stopped with error: \(error)")
@@ -92,7 +90,6 @@ extension SystemAudioCaptureEngine: SCStreamDelegate {
     }
 }
 
-@available(macOS 12.3, *)
 extension SystemAudioCaptureEngine: SCStreamOutput {
     nonisolated func stream(_ stream: SCStream, didOutputSampleBuffer sampleBuffer: CMSampleBuffer, of type: SCStreamOutputType) {
         guard type == .audio else { return }
@@ -147,11 +144,11 @@ extension SystemAudioCaptureEngine: SCStreamOutput {
                 monoSamples = Array(samples)
             }
 
-            // Thread-safe buffer count access
-            bufferCountLock.lock()
-            _bufferCount += 1
-            let currentCount = _bufferCount
-            bufferCountLock.unlock()
+            // Thread-safe buffer count access using OSAllocatedUnfairLock
+            let currentCount = bufferCount.withLock { count in
+                count += 1
+                return count
+            }
 
             if currentCount == 1 || currentCount % 60 == 0 {
                 let rms = sqrt(monoSamples.map { $0 * $0 }.reduce(0, +) / Float(monoSamples.count))
