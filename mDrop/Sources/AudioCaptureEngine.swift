@@ -28,15 +28,24 @@ class AudioCaptureEngine: NSObject, ObservableObject {
     }
 
     func start() {
+        guard let engine = audioEngine, !engine.isRunning else {
+            print("Audio engine already running or not initialized")
+            return
+        }
+
         requestMicrophonePermission { [weak self] granted in
             guard granted else {
                 print("Microphone permission denied")
                 return
             }
 
+            guard let strongSelf = self, let engine = strongSelf.audioEngine else {
+                return
+            }
+
             do {
-                try self?.audioEngine?.start()
-                DispatchQueue.main.async {
+                try engine.start()
+                DispatchQueue.main.async { [weak self] in
                     self?.isCapturing = true
                 }
             } catch {
@@ -46,10 +55,19 @@ class AudioCaptureEngine: NSObject, ObservableObject {
     }
 
     func stop() {
-        audioEngine?.stop()
+        guard let engine = audioEngine, engine.isRunning else {
+            DispatchQueue.main.async { [weak self] in
+                self?.isCapturing = false
+            }
+            return
+        }
+
+        // Remove tap first, before stopping the engine
         inputNode?.removeTap(onBus: 0)
-        DispatchQueue.main.async {
-            self.isCapturing = false
+        engine.stop()
+
+        DispatchQueue.main.async { [weak self] in
+            self?.isCapturing = false
         }
     }
 
