@@ -71,6 +71,8 @@ class AudioCaptureEngine: NSObject, ObservableObject {
         }
     }
 
+    private var bufferCount = 0
+
     private func processAudioBuffer(_ buffer: AVAudioPCMBuffer) {
         guard let channelData = buffer.floatChannelData else { return }
 
@@ -79,6 +81,12 @@ class AudioCaptureEngine: NSObject, ObservableObject {
 
         // Convert to array for processing
         var audioData = Array(UnsafeBufferPointer(start: channelDataPointer, count: frameLength))
+
+        bufferCount += 1
+        if bufferCount == 1 || bufferCount % 60 == 0 {
+            let rms = sqrt(audioData.map { $0 * $0 }.reduce(0, +) / Float(audioData.count))
+            print("🎤 Audio buffer #\(bufferCount): frames=\(frameLength), RMS=\(rms)")
+        }
 
         // Ensure we have enough data
         if audioData.count < 512 {
