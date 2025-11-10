@@ -1,11 +1,18 @@
 import Foundation
 import Combine
 
+enum AudioSource {
+    case microphone
+    case systemAudio
+}
+
 class VisualizationEngine: ObservableObject {
     @Published var isRunning = false
     @Published var currentPreset: VisualizationPreset = .plasma
+    @Published var audioSource: AudioSource = .microphone
 
     let audioCaptureEngine: AudioCaptureEngine
+    let systemAudioCaptureEngine: SystemAudioCaptureEngine?
     let fftAnalyzer: FFTAnalyzer
 
     private var cancellables = Set<AnyCancellable>()
@@ -16,19 +23,37 @@ class VisualizationEngine: ObservableObject {
 
     init() {
         audioCaptureEngine = AudioCaptureEngine()
+
+        // System audio capture only available on macOS 12.3+
+        if #available(macOS 12.3, *) {
+            systemAudioCaptureEngine = SystemAudioCaptureEngine()
+        } else {
+            systemAudioCaptureEngine = nil
+        }
+
         fftAnalyzer = FFTAnalyzer()
 
         setupBindings()
     }
 
     private func setupBindings() {
-        // Listen to audio level updates
+        // Listen to microphone audio level updates
         audioCaptureEngine.$audioLevels
             .sink { [weak self] levels in
-                guard let self = self else { return }
+                guard let self = self, self.audioSource == .microphone else { return }
                 self.fftAnalyzer.analyze(samples: levels)
             }
             .store(in: &cancellables)
+
+        // Listen to system audio level updates (if available)
+        if #available(macOS 12.3, *) {
+            systemAudioCaptureEngine?.$audioLevels
+                .sink { [weak self] levels in
+                    guard let self = self, self.audioSource == .systemAudio else { return }
+                    self.fftAnalyzer.analyze(samples: levels)
+                }
+                .store(in: &cancellables)
+        }
 
         // Listen to FFT magnitude updates
         fftAnalyzer.$magnitudes
@@ -50,13 +75,41 @@ class VisualizationEngine: ObservableObject {
     }
 
     func start() {
-        audioCaptureEngine.start()
-        isRunning = true
+        Task { @MainActor in
+            switch audioSource {
+            case .microphone:
+                audioCaptureEngine.start()
+            case .systemAudio:
+                if #available(macOS 12.3, *) {
+                    await systemAudioCaptureEngine?.start()
+                } else {
+                    print("System audio capture not available, falling back to microphone")
+                    audioSource = .microphone
+                    audioCaptureEngine.start()
+                }
+            }
+            isRunning = true
+        }
     }
 
     func stop() {
-        audioCaptureEngine.stop()
-        isRunning = false
+        Task { @MainActor in
+            audioCaptureEngine.stop()
+            if #available(macOS 12.3, *) {
+                await systemAudioCaptureEngine?.stop()
+            }
+            isRunning = false
+        }
+    }
+
+    func setAudioSource(_ source: AudioSource) {
+        if isRunning {
+            stop()
+            audioSource = source
+            start()
+        } else {
+            audioSource = source
+        }
     }
 
     func setPreset(_ preset: VisualizationPreset) {

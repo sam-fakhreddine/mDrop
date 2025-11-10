@@ -146,13 +146,34 @@ struct ContentView: View {
                 .toggleStyle(.button)
             }
 
+            // Audio source selector
+            HStack(spacing: 10) {
+                Text("Audio Source:")
+                    .font(.caption)
+                    .foregroundColor(.white.opacity(0.8))
+
+                Picker("", selection: $visualizationEngine.audioSource) {
+                    Text("🎤 Microphone").tag(AudioSource.microphone)
+                    if #available(macOS 12.3, *) {
+                        Text("🔊 System Audio").tag(AudioSource.systemAudio)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .frame(width: 250)
+                .onChange(of: visualizationEngine.audioSource) { newSource in
+                    visualizationEngine.setAudioSource(newSource)
+                }
+            }
+
             // Audio status indicator
             HStack {
                 Circle()
                     .fill(visualizationEngine.isRunning ? Color.green : Color.red)
                     .frame(width: 8, height: 8)
 
-                Text(visualizationEngine.isRunning ? "Audio Capturing" : "Audio Stopped")
+                Text(visualizationEngine.isRunning ?
+                     (visualizationEngine.audioSource == .microphone ? "Microphone Active" : "System Audio Active") :
+                     "Audio Stopped")
                     .font(.caption)
                     .foregroundColor(.white.opacity(0.8))
 
