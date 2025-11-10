@@ -83,18 +83,32 @@ class FFTAnalyzer: ObservableObject {
         }
     }
 
+    private var bandLevels: [Float] = Array(repeating: 0, count: 10)
+
     private func updateFrequencyBands(_ mags: [Float]) {
-        // Bass: 20-250 Hz (bins 0-15 approximately)
-        let bassRange = Array(mags[0..<min(16, mags.count)])
-        bassLevel = bassRange.reduce(0, +) / Float(bassRange.count)
-
-        // Mid: 250-2000 Hz (bins 16-80 approximately)
-        let midRange = Array(mags[16..<min(80, mags.count)])
-        midLevel = midRange.reduce(0, +) / Float(midRange.count)
-
-        // Treble: 2000+ Hz (bins 80-256 approximately)
-        let trebleRange = Array(mags[80..<min(256, mags.count)])
-        trebleLevel = trebleRange.reduce(0, +) / Float(trebleRange.count)
+        let bands: [(range: Range<Int>, weight: Float)] = [
+            (0..<1, 3.0),      // 31 Hz
+            (1..<2, 2.5),      // 62 Hz
+            (2..<3, 2.0),      // 125 Hz
+            (3..<5, 5),      // 250 Hz
+            (5..<9, 6),      // 500 Hz
+            (9..<17, 7),     // 1 kHz
+            (17..<33, 8),    // 2 kHz
+            (33..<65, 7),    // 4 kHz
+            (65..<129, 7),   // 8 kHz
+            (129..<256, 6)   // 16 kHz
+        ]
+        
+        for (index, band) in bands.enumerated() {
+            let range = Array(mags[band.range.clamped(to: 0..<mags.count)])
+            guard !range.isEmpty else { continue }
+            
+            let average = range.reduce(0, +) / Float(range.count)
+            let weighted = average * band.weight
+            
+            // Smooth the value
+            bandLevels[index] = bandLevels[index] * 0.75 + weighted * 0.25
+        }
     }
 
     deinit {
