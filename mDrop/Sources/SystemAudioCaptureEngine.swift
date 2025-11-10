@@ -100,11 +100,35 @@ extension SystemAudioCaptureEngine: SCStreamOutput {
         guard type == .audio else { return }
 
         // Extract audio data from the sample buffer
-        guard let audioBufferList = sampleBuffer.audioBufferList else { return }
+        var audioBufferList = AudioBufferList()
+        var blockBuffer: CMBlockBuffer?
+
+        let status = CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
+            sampleBuffer,
+            bufferListSizeNeededOut: nil,
+            bufferListOut: &audioBufferList,
+            bufferListSize: MemoryLayout<AudioBufferList>.size,
+            blockBufferAllocator: nil,
+            blockBufferMemoryAllocator: nil,
+            flags: kCMSampleBufferFlag_AudioBufferList_Assure16ByteAlignment,
+            blockBufferOut: &blockBuffer
+        )
+
+        guard status == noErr else {
+            print("Failed to get audio buffer list: \(status)")
+            return
+        }
+
+        defer {
+            if let blockBuffer = blockBuffer {
+                // Release the block buffer when done
+                CFRelease(blockBuffer)
+            }
+        }
 
         let buffers = UnsafeBufferPointer<AudioBuffer>(
-            start: &audioBufferList.pointee.mBuffers,
-            count: Int(audioBufferList.pointee.mNumberBuffers)
+            start: &audioBufferList.mBuffers,
+            count: Int(audioBufferList.mNumberBuffers)
         )
 
         for buffer in buffers {
@@ -118,7 +142,7 @@ extension SystemAudioCaptureEngine: SCStreamOutput {
 
             // Convert to mono if stereo by averaging channels
             var monoSamples: [Float] = []
-            if audioBufferList.pointee.mNumberBuffers == 2 {
+            if audioBufferList.mNumberBuffers == 2 {
                 // Stereo to mono
                 for i in stride(from: 0, to: frameCount, by: 2) {
                     if i + 1 < frameCount {
@@ -145,27 +169,5 @@ extension SystemAudioCaptureEngine: SCStreamOutput {
                 self?.audioLevels = Array(audioData.prefix(512))
             }
         }
-    }
-}
-
-// Helper extension to get AudioBufferList from CMSampleBuffer
-extension CMSampleBuffer {
-    var audioBufferList: AudioBufferList? {
-        var bufferList = AudioBufferList()
-        var blockBuffer: CMBlockBuffer?
-
-        let status = CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
-            self,
-            bufferListSizeNeededOut: nil,
-            bufferListOut: &bufferList,
-            bufferListSize: MemoryLayout<AudioBufferList>.size,
-            blockBufferAllocator: nil,
-            blockBufferMemoryAllocator: nil,
-            flags: kCMSampleBufferFlag_AudioBufferList_Assure16ByteAlignment,
-            blockBufferOut: &blockBuffer
-        )
-
-        guard status == noErr else { return nil }
-        return bufferList
     }
 }
