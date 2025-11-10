@@ -11,7 +11,9 @@ class SystemAudioCaptureEngine: NSObject, ObservableObject {
     private var stream: SCStream?
     private var audioBuffer: [Float] = []
     private let bufferSize = 1024
-    private var bufferCount = 0
+
+    // Use OSAllocatedUnfairLock for thread-safe counter access
+    private let bufferCountLock = OSAllocatedUnfairLock(initialState: 0)
 
     override init() {
         super.init()
@@ -144,10 +146,15 @@ extension SystemAudioCaptureEngine: SCStreamOutput {
                 monoSamples = Array(samples)
             }
 
-            bufferCount += 1
-            if bufferCount == 1 || bufferCount % 60 == 0 {
+            // Thread-safe buffer count access
+            let currentCount = bufferCountLock.withLock { count in
+                count += 1
+                return count
+            }
+
+            if currentCount == 1 || currentCount % 60 == 0 {
                 let rms = sqrt(monoSamples.map { $0 * $0 }.reduce(0, +) / Float(monoSamples.count))
-                print("🔊 System audio buffer #\(bufferCount): frames=\(frameCount), RMS=\(rms)")
+                print("🔊 System audio buffer #\(currentCount): frames=\(frameCount), RMS=\(rms)")
             }
 
             // Ensure we have enough data
