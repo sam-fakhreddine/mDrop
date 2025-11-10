@@ -16,6 +16,7 @@
 		A1000007 /* VisualizationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000017 /* VisualizationView.swift */; };
 		A1000008 /* PresetManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000018 /* PresetManager.swift */; };
 		A1000009 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = A1000019 /* Shaders.metal */; };
+		A100000A /* SystemAudioCaptureEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100001A /* SystemAudioCaptureEngine.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		A1000017 /* VisualizationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = VisualizationView.swift; path = mDrop/Sources/VisualizationView.swift; sourceTree = SOURCE_ROOT; };
 		A1000018 /* PresetManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PresetManager.swift; path = mDrop/Sources/PresetManager.swift; sourceTree = SOURCE_ROOT; };
 		A1000019 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; name = Shaders.metal; path = mDrop/Shaders/Shaders.metal; sourceTree = SOURCE_ROOT; };
+		A100001A /* SystemAudioCaptureEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SystemAudioCaptureEngine.swift; path = mDrop/Sources/SystemAudioCaptureEngine.swift; sourceTree = SOURCE_ROOT; };
 		A1000020 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = mDrop/Info.plist; sourceTree = SOURCE_ROOT; };
 		A1000021 /* mDrop.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = mDrop.entitlements; path = mDrop/mDrop.entitlements; sourceTree = SOURCE_ROOT; };
 		A1000030 /* mDrop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mDrop.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -77,6 +79,7 @@
 				A1000011 /* mDropApp.swift */,
 				A1000012 /* ContentView.swift */,
 				A1000013 /* AudioCaptureEngine.swift */,
+				A100001A /* SystemAudioCaptureEngine.swift */,
 				A1000014 /* FFTAnalyzer.swift */,
 				A1000015 /* VisualizationEngine.swift */,
 				A1000016 /* MetalRenderer.swift */,
@@ -165,6 +168,7 @@
 				A1000001 /* mDropApp.swift in Sources */,
 				A1000002 /* ContentView.swift in Sources */,
 				A1000003 /* AudioCaptureEngine.swift in Sources */,
+				A100000A /* SystemAudioCaptureEngine.swift in Sources */,
 				A1000004 /* FFTAnalyzer.swift in Sources */,
 				A1000005 /* VisualizationEngine.swift in Sources */,
 				A1000006 /* MetalRenderer.swift in Sources */,
