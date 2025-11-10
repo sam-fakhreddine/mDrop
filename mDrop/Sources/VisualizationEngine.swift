@@ -80,17 +80,41 @@ class VisualizationEngine: ObservableObject {
 
     func stop() {
         Task {
-            audioCaptureEngine.stop()
-            await systemAudioCaptureEngine.stop()
+            // Only stop the currently active source
+            switch audioSource {
+            case .microphone:
+                audioCaptureEngine.stop()
+            case .systemAudio:
+                await systemAudioCaptureEngine.stop()
+            }
             isRunning = false
         }
     }
 
     func setAudioSource(_ source: AudioSource) {
+        // If already running, we need to properly stop the current source
+        // and start the new one
         if isRunning {
-            stop()
+            let oldSource = audioSource
             audioSource = source
-            start()
+
+            Task {
+                // Stop the old source
+                switch oldSource {
+                case .microphone:
+                    audioCaptureEngine.stop()
+                case .systemAudio:
+                    await systemAudioCaptureEngine.stop()
+                }
+
+                // Start the new source
+                switch source {
+                case .microphone:
+                    audioCaptureEngine.start()
+                case .systemAudio:
+                    await systemAudioCaptureEngine.start()
+                }
+            }
         } else {
             audioSource = source
         }

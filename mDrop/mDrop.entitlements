@@ -8,5 +8,7 @@
 	<true/>
 	<key>com.apple.security.files.user-selected.read-only</key>
 	<true/>
+	<key>com.apple.security.temporary-exception.audio-unit-host</key>
+	<true/>
 </dict>
 </plist>
